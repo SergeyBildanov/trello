@@ -128,7 +128,12 @@ class Column {
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("app worked");
-  let cardsArray = JSON.parse(localStorage.getItem("columns"));
+  let cardsArray;
+  if (localStorage.getItem("columns")) {
+    cardsArray = JSON.parse(localStorage.getItem("columns"));
+  } else {
+    cardsArray = [[], [], []];
+  }
   let columns = Array.from(document.querySelectorAll(".column"));
   let colList = [];
   for (let i = 0; i < columns.length; i++) {

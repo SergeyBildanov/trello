@@ -66,6 +66,9 @@ body {
     display: block;
     height: 16px;
 }
+.delete-svg{
+    cursor: pointer;
+}
 .svg{
     fill:#555;
     width: 16px;

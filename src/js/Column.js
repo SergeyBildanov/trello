@@ -50,7 +50,7 @@ export default class Column {
     let cursor;
 
     const onMouseMove = (e) => {
-      actualElement.style.top = e.clientY - cursor.y+ "px";
+      actualElement.style.top = e.clientY - cursor.y + "px";
       actualElement.style.left = e.clientX - cursor.x + "px";
       let rect = actualElement.getBoundingClientRect();
       if (
@@ -117,7 +117,6 @@ export default class Column {
       }
     });
     this._element.addEventListener("mousedown", (e) => {
-      
       if (
         e.target.closest(".delete-svg") ||
         e.target.classList.contains("delete-svg")
@@ -139,8 +138,8 @@ export default class Column {
           let rect = actualElement.getBoundingClientRect();
           cursor = {
             x: e.clientX - rect.left,
-            y: e.clientY - rect.top
-          }
+            y: e.clientY - rect.top,
+          };
           document.documentElement.addEventListener("mouseup", onMouseUp);
           document.documentElement.addEventListener("mousemove", onMouseMove);
         }

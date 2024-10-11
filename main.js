@@ -51,7 +51,6 @@ class Column {
       actualElement.style.left = e.clientX + "px";
       let rect = actualElement.getBoundingClientRect();
       if (e.target.closest(".card") && !e.target.closest(".list").querySelector(".filler")) {
-        console.log(rect);
         closestList = e.target.closest(".list");
         closestCard = e.target.closest(".card");
         closestCard.insertAdjacentHTML("afterEnd", `<div class="filler" width=${rect.width} height=${rect.height}></div>`);
@@ -61,9 +60,7 @@ class Column {
           closestList.insertAdjacentHTML("beforeEnd", `<div class="filler" width=${rect.width} height=${rect.height}></div>`);
         }
       } else if (!e.target.closest(".card")) {
-        console.log(closestList);
         if (closestList) {
-          console.log(closestList.querySelector(".filler"));
           closestList.removeChild(closestList.querySelector(".filler"));
           closestList = undefined;
         }

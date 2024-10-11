@@ -44,9 +44,30 @@ class Column {
     });
     this.drawColumn();
     let actualElement;
-    const onMouseOver = e => {
+    let closestList;
+    let closestCard;
+    const onMouseMove = e => {
       actualElement.style.top = e.clientY + "px";
       actualElement.style.left = e.clientX + "px";
+      let rect = actualElement.getBoundingClientRect();
+      if (e.target.closest(".card") && !e.target.closest(".list").querySelector(".filler")) {
+        console.log(rect);
+        closestList = e.target.closest(".list");
+        closestCard = e.target.closest(".card");
+        closestCard.insertAdjacentHTML("afterEnd", `<div class="filler" width=${rect.width} height=${rect.height}></div>`);
+      } else if (!e.target.closest(".card") && e.target.closest(".column")) {
+        closestList = e.target.closest(".column").querySelector(".list");
+        if (!closestList.querySelector(".filler")) {
+          closestList.insertAdjacentHTML("beforeEnd", `<div class="filler" width=${rect.width} height=${rect.height}></div>`);
+        }
+      } else if (!e.target.closest(".card")) {
+        console.log(closestList);
+        if (closestList) {
+          console.log(closestList.querySelector(".filler"));
+          closestList.removeChild(closestList.querySelector(".filler"));
+          closestList = undefined;
+        }
+      }
     };
     const onMouseUp = e => {
       let mouseUpItem = e.target;
@@ -61,13 +82,23 @@ class Column {
       } else {
         list = e.target.closest(".column").querySelector(".list");
       }
-      list.appendChild(actualElement);
+      list.querySelector(".filler").replaceWith(actualElement);
       list.dispatchEvent(new Event("change"));
       actualElement.classList.remove("dragged");
       actualElement = undefined;
       document.documentElement.removeEventListener("mouseup", onMouseUp);
-      document.documentElement.removeEventListener("mouseover", onMouseOver);
+      document.documentElement.removeEventListener("mousemove", onMouseMove);
     };
+    this._element.addEventListener("mouseover", e => {
+      if (e.target.closest(".card")) {
+        e.target.closest(".card").querySelector(".delete-svg").classList.remove("hidden");
+      }
+    });
+    this._element.addEventListener("mouseout", e => {
+      if (e.target.closest(".card")) {
+        e.target.closest(".card").querySelector(".delete-svg").classList.add("hidden");
+      }
+    });
     this._element.addEventListener("mousedown", e => {
       if (e.target.closest(".delete-svg") || e.target.classList.contains("delete-svg")) {
         this.deleteCard(e.target.closest(".card").textContent.replace(/\s+/g, " ").trim());
@@ -81,7 +112,7 @@ class Column {
           actualElement = e.target.closest(".card");
           actualElement.classList.add("dragged");
           document.documentElement.addEventListener("mouseup", onMouseUp);
-          document.documentElement.addEventListener("mouseover", onMouseOver);
+          document.documentElement.addEventListener("mousemove", onMouseMove);
         }
       }
     });
@@ -103,7 +134,7 @@ class Column {
     svg.classList.add("delete-svg");
     div.appendChild(text);
     div.appendChild(svg);
-    svg.outerHTML = `<svg class="delete-svg" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    svg.outerHTML = `<svg class="delete-svg hidden" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
             <path d="M4.11 2.697L2.698 4.11 6.586 8l-3.89 3.89 1.415 1.413L8 9.414l3.89 3.89 1.413-1.415L9.414 8l3.89-3.89-1.415-1.413L8 6.586l-3.89-3.89z"></path>
           </svg>`;
     div.classList.add("card");

@@ -51,24 +51,27 @@ export default class Column {
     const onMouseMove = (e) => {
       actualElement.style.top = e.clientY + "px";
       actualElement.style.left = e.clientX + "px";
-      let rect = actualElement.getBoundingClientRect()
-      if(e.target.closest(".card")  && !e.target.closest(".list").querySelector(".filler")){
-        console.log(rect);
+      let rect = actualElement.getBoundingClientRect();
+      if (
+        e.target.closest(".card") &&
+        !e.target.closest(".list").querySelector(".filler")
+      ) {
         closestList = e.target.closest(".list");
         closestCard = e.target.closest(".card");
-        closestCard.insertAdjacentHTML("afterEnd", `<div class="filler" width=${rect.width} height=${rect.height}></div>`)
-      }
-      else if(!e.target.closest(".card") && e.target.closest(".column") ){
+        closestCard.insertAdjacentHTML(
+          "afterEnd",
+          `<div class="filler" width=${rect.width} height=${rect.height}></div>`,
+        );
+      } else if (!e.target.closest(".card") && e.target.closest(".column")) {
         closestList = e.target.closest(".column").querySelector(".list");
-        if(!closestList.querySelector(".filler")){
-          closestList.insertAdjacentHTML("beforeEnd", `<div class="filler" width=${rect.width} height=${rect.height}></div>`);
+        if (!closestList.querySelector(".filler")) {
+          closestList.insertAdjacentHTML(
+            "beforeEnd",
+            `<div class="filler" width=${rect.width} height=${rect.height}></div>`,
+          );
         }
-        
-      }
-      else if(!e.target.closest(".card")){
-        console.log(closestList);
-        if(closestList){
-          console.log(closestList.querySelector(".filler"));
+      } else if (!e.target.closest(".card")) {
+        if (closestList) {
           closestList.removeChild(closestList.querySelector(".filler"));
           closestList = undefined;
         }
@@ -95,16 +98,22 @@ export default class Column {
       document.documentElement.removeEventListener("mouseup", onMouseUp);
       document.documentElement.removeEventListener("mousemove", onMouseMove);
     };
-    this._element.addEventListener("mouseover", (e)=>{
-      if(e.target.closest(".card")){
-        e.target.closest(".card").querySelector(".delete-svg").classList.remove("hidden")
+    this._element.addEventListener("mouseover", (e) => {
+      if (e.target.closest(".card")) {
+        e.target
+          .closest(".card")
+          .querySelector(".delete-svg")
+          .classList.remove("hidden");
       }
     });
-    this._element.addEventListener("mouseout", (e)=>{
-      if(e.target.closest(".card")){
-        e.target.closest(".card").querySelector(".delete-svg").classList.add("hidden")
+    this._element.addEventListener("mouseout", (e) => {
+      if (e.target.closest(".card")) {
+        e.target
+          .closest(".card")
+          .querySelector(".delete-svg")
+          .classList.add("hidden");
       }
-    })
+    });
     this._element.addEventListener("mousedown", (e) => {
       if (
         e.target.closest(".delete-svg") ||

@@ -74,6 +74,7 @@ export default class Column {
         if (closestList) {
           closestList.removeChild(closestList.querySelector(".filler"));
           closestList = undefined;
+          closestCard = undefined;
         }
       }
     };

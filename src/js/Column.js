@@ -47,10 +47,11 @@ export default class Column {
     let actualElement;
     let closestList;
     let closestCard;
+    let cursor;
 
     const onMouseMove = (e) => {
-      actualElement.style.top = e.clientY + "px";
-      actualElement.style.left = e.clientX + "px";
+      actualElement.style.top = e.clientY - cursor.y+ "px";
+      actualElement.style.left = e.clientX - cursor.x + "px";
       let rect = actualElement.getBoundingClientRect();
       if (
         e.target.closest(".card") &&
@@ -93,7 +94,7 @@ export default class Column {
       }
       list.querySelector(".filler").replaceWith(actualElement);
       list.dispatchEvent(new Event("change"));
-      actualElement.classList.remove("dragged");
+      actualElement.classList.toggle("dragged");
       actualElement = undefined;
 
       document.documentElement.removeEventListener("mouseup", onMouseUp);
@@ -116,6 +117,7 @@ export default class Column {
       }
     });
     this._element.addEventListener("mousedown", (e) => {
+      
       if (
         e.target.closest(".delete-svg") ||
         e.target.classList.contains("delete-svg")
@@ -133,7 +135,12 @@ export default class Column {
             e.target.closest(".card").textContent.replace(/\s+/g, " ").trim(),
           );
           actualElement = e.target.closest(".card");
-          actualElement.classList.add("dragged");
+          actualElement.classList.toggle("dragged");
+          let rect = actualElement.getBoundingClientRect();
+          cursor = {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+          }
           document.documentElement.addEventListener("mouseup", onMouseUp);
           document.documentElement.addEventListener("mousemove", onMouseMove);
         }

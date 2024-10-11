@@ -25,6 +25,7 @@ body {
     flex-direction: column;
 }
 .card{
+    width: 180px;
     background-color: beige;
     display: flex;
     height: 50px;
@@ -85,4 +86,9 @@ body {
     z-index: 999;
     pointer-events: none;
     background: #fff;
+}
+.filler{
+    display:block;
+    height: 50px;
+    width: 180px;
 }

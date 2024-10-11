@@ -60,6 +60,9 @@ class Column {
         if (!closestList.querySelector(".filler")) {
           closestList.insertAdjacentHTML("beforeEnd", `<div class="filler" width=${rect.width} height=${rect.height}></div>`);
         }
+      } else if (e.target.closest(".column") && e.target.closest(".column").querySelector(".list") !== closestList || e.target.classList.contains("column") && e.target.querySelector(".list") !== closestList) {
+        closestList.removeChild(closestList.querySelector(".filler"));
+        closestList = e.target.closest(".column").querySelector(".list");
       } else if (!e.target.closest(".card")) {
         if (closestList) {
           closestList.removeChild(closestList.querySelector(".filler"));

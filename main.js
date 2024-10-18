@@ -18,6 +18,7 @@ class Column {
     this._addBlock = this._element.querySelector(".add-block");
     this._link = this._element.querySelector(".link-block");
     this._form = this._element.querySelector(".form");
+    this._timeout;
     this._list.addEventListener("click", e => {
       if (e.target.closest(".delete-svg")) {
         this.deleteCard(e.target.closest(".delete-svg").previousElementSibling.textContent.replace(/\s+/g, " ").trim());
@@ -47,28 +48,26 @@ class Column {
     let closestList;
     let closestCard;
     let cursor;
+    let filler;
     const onMouseMove = e => {
       actualElement.style.top = e.clientY - cursor.y + "px";
       actualElement.style.left = e.clientX - cursor.x + "px";
-      let rect = actualElement.getBoundingClientRect();
-      if (e.target.closest(".card") && !e.target.closest(".list").querySelector(".filler")) {
+      let elementRect = actualElement.style;
+      if (e.target.closest(".card")) {
+        clearTimeout(this._timeout);
         closestList = e.target.closest(".list");
         closestCard = e.target.closest(".card");
-        closestCard.insertAdjacentHTML("afterEnd", `<div class="filler" width=${rect.width} height=${rect.height}></div>`);
+        this._timeout = setTimeout(() => {
+          let cardRect = closestCard.getBoundingClientRect();
+          if (cardRect.top > elementRect.top) {
+            closestCard.insertAdjacentElement("afterEnd", filler);
+          } else {
+            closestCard.insertAdjacentElement("beforeBegin", filler);
+          }
+        }, 300);
       } else if (!e.target.closest(".card") && e.target.closest(".column")) {
         closestList = e.target.closest(".column").querySelector(".list");
-        if (!closestList.querySelector(".filler")) {
-          closestList.insertAdjacentHTML("beforeEnd", `<div class="filler" width=${rect.width} height=${rect.height}></div>`);
-        }
-      } else if (e.target.closest(".column") && e.target.closest(".column").querySelector(".list") !== closestList || e.target.classList.contains("column") && e.target.querySelector(".list") !== closestList) {
-        closestList.removeChild(closestList.querySelector(".filler"));
-        closestList = e.target.closest(".column").querySelector(".list");
-      } else if (!e.target.closest(".card")) {
-        if (closestList) {
-          closestList.removeChild(closestList.querySelector(".filler"));
-          closestList = undefined;
-          closestCard = undefined;
-        }
+        closestList.appendChild(filler);
       }
     };
     const onMouseUp = e => {
@@ -76,17 +75,11 @@ class Column {
       if (mouseUpItem === document.documentElement) {
         mouseUpItem = document.body;
       }
-      let list;
-      if (e.target.classList.contains("column")) {
-        list = e.target.querySelector(".list");
-      } else if (document.body === e.target) {
-        list = e.target.closest(".list");
-      } else {
-        list = e.target.closest(".column").querySelector(".list");
-      }
-      list.querySelector(".filler").replaceWith(actualElement);
+      let list = closestList;
+      filler.replaceWith(actualElement);
       list.dispatchEvent(new Event("change"));
       actualElement.classList.toggle("dragged");
+      actualElement.style = null;
       actualElement = undefined;
       document.documentElement.removeEventListener("mouseup", onMouseUp);
       document.documentElement.removeEventListener("mousemove", onMouseMove);
@@ -114,6 +107,9 @@ class Column {
           actualElement = e.target.closest(".card");
           actualElement.classList.toggle("dragged");
           let rect = actualElement.getBoundingClientRect();
+          closestList = e.target.closest(".list");
+          closestList.insertAdjacentHTML("beforeEnd", `<div class="filler" width=${rect.width} height=${rect.height}></div>`);
+          filler = e.target.closest(".list").querySelector(".filler");
           cursor = {
             x: e.clientX - rect.left,
             y: e.clientY - rect.top

@@ -18,7 +18,6 @@ class Column {
     this._addBlock = this._element.querySelector(".add-block");
     this._link = this._element.querySelector(".link-block");
     this._form = this._element.querySelector(".form");
-    this._timeout;
     this._list.addEventListener("click", e => {
       if (e.target.closest(".delete-svg")) {
         this.deleteCard(e.target.closest(".delete-svg").previousElementSibling.textContent.replace(/\s+/g, " ").trim());
@@ -57,14 +56,12 @@ class Column {
         clearTimeout(this._timeout);
         closestList = e.target.closest(".list");
         closestCard = e.target.closest(".card");
-        this._timeout = setTimeout(() => {
-          let cardRect = closestCard.getBoundingClientRect();
-          if (cardRect.top > elementRect.top) {
-            closestCard.insertAdjacentElement("afterEnd", filler);
-          } else {
-            closestCard.insertAdjacentElement("beforeBegin", filler);
-          }
-        }, 300);
+        let cardRect = closestCard.getBoundingClientRect();
+        if (cardRect.top <= elementRect.top) {
+          closestCard.insertAdjacentElement("afterEnd", filler);
+        } else {
+          closestCard.insertAdjacentElement("beforeBegin", filler);
+        }
       } else if (!e.target.closest(".card") && e.target.closest(".column")) {
         closestList = e.target.closest(".column").querySelector(".list");
         closestList.appendChild(filler);

@@ -55,28 +55,18 @@ export default class Column {
       actualElement.style.top = e.clientY - cursor.y + "px";
       actualElement.style.left = e.clientX - cursor.x + "px";
       let elementRect = actualElement.style;
-      if (
-        e.target.closest(".card")
-      ) {
+      if (e.target.closest(".card")) {
         clearTimeout(this._timeout);
         closestList = e.target.closest(".list");
         closestCard = e.target.closest(".card");
-        this._timeout = setTimeout(()=>{
+        this._timeout = setTimeout(() => {
           let cardRect = closestCard.getBoundingClientRect();
-          if(cardRect.top > elementRect.top){
-            closestCard.insertAdjacentElement(
-            "afterEnd",
-            filler
-          );
-          }
-          else{
-            closestCard.insertAdjacentElement(
-              "beforeBegin",
-              filler
-            );
+          if (cardRect.top > elementRect.top) {
+            closestCard.insertAdjacentElement("afterEnd", filler);
+          } else {
+            closestCard.insertAdjacentElement("beforeBegin", filler);
           }
         }, 300);
-        
       } else if (!e.target.closest(".card") && e.target.closest(".column")) {
         closestList = e.target.closest(".column").querySelector(".list");
         closestList.appendChild(filler);
@@ -131,18 +121,20 @@ export default class Column {
             e.target.closest(".card").textContent.replace(/\s+/g, " ").trim(),
           );
           actualElement = e.target.closest(".card");
-          actualElement.classList.toggle("dragged");
           let rect = actualElement.getBoundingClientRect();
-          closestList = e.target.closest(".list");
-          closestList.insertAdjacentHTML(
-            "beforeEnd",
-            `<div class="filler" width=${rect.width} height=${rect.height}></div>`,
-          );
-          filler = e.target.closest(".list").querySelector(".filler");
           cursor = {
             x: e.clientX - rect.left,
             y: e.clientY - rect.top,
           };
+          actualElement.style.top = e.clientY - cursor.y + "px";
+          actualElement.style.left = e.clientX - cursor.x + "px";
+          closestList = e.target.closest(".list");
+          actualElement.insertAdjacentHTML(
+            "afterEnd",
+            `<div class="filler" width=${rect.width} height=${rect.height}></div>`,
+          );
+          actualElement.classList.toggle("dragged");
+          filler = e.target.closest(".list").querySelector(".filler");
           document.documentElement.addEventListener("mouseup", onMouseUp);
           document.documentElement.addEventListener("mousemove", onMouseMove);
         }

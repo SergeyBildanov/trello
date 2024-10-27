@@ -54,6 +54,9 @@ export default class Column {
       actualElement.style.top = e.clientY - cursor.y + "px";
       actualElement.style.left = e.clientX - cursor.x + "px";
       let elementRect = actualElement.style;
+      if(e.target.closest(".filler")){
+        return;
+      }
       if (e.target.closest(".card")) {
         clearTimeout(this._timeout);
         closestList = e.target.closest(".list");
@@ -64,10 +67,13 @@ export default class Column {
         } else {
           closestCard.insertAdjacentElement("beforeBegin", filler);
         }
-      } else if (!e.target.closest(".card") && e.target.closest(".column")) {
+        return;
+      }
+      if (!e.target.closest(".card") && e.target.closest(".column")) {
         closestList = e.target.closest(".column").querySelector(".list");
         closestList.appendChild(filler);
-      }
+        return;
+      } 
     };
     const onMouseUp = (e) => {
       let mouseUpItem = e.target;
